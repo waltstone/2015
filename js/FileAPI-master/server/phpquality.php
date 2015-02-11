@@ -17,7 +17,7 @@ if($_FILES['file']['error']>0){
   exit("檔案上傳失敗！");//如果出現錯誤則停止程式
 }
 
-$path ='C:\\wamp\\www\\upload\\';
+$path ='C:\\wamp\\www\\2015\\upload\\';
 $url = 'http://127.0.0.1/upload/';
 $tmp= $_FILES['file']['tmp_name'];
 $filename=basename(iconv("utf-8", "big5",$_FILES['file']['name']));  //編碼

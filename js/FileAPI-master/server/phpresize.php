@@ -166,7 +166,7 @@ $imgresize->keep_proportions = true;
 $imgresize->output = 'SAME';
 $tmp= $_FILES['file2']['tmp_name'];//暫存檔案
 
-$path ='C:\\wamp\\www\\upload\\';
+$path ='C:\\wamp\\www\\2015\\upload\\';
 $filename=basename($_FILES['file2']['name']);
 
 
