@@ -160,13 +160,13 @@ class resize_img
 //makes a simple thumbnail of an image of 100x100 and saves the image then outputs it.
 $imgresize = new resize_img();
 
-$imgresize->sizelimit_x = 500;//大小設定
-$imgresize->sizelimit_y = 500;
+$imgresize->sizelimit_x = 600;//大小設定
+$imgresize->sizelimit_y = 600;
 $imgresize->keep_proportions = true;
 $imgresize->output = 'SAME';
 $tmp= $_FILES['file2']['tmp_name'];//暫存檔案
 
-$path ='C:\\wamp\\www\\2015\\upload\\';
+$path ='../../../uploadresize/';
 $filename=basename($_FILES['file2']['name']);
 
 

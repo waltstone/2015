@@ -18,9 +18,10 @@ if($_FILES['file']['error']>0){
 }
 
 $path ='C:\\wamp\\www\\2015\\upload\\';
-$url = 'http://127.0.0.1/upload/';
+$url = 'http://192.168.0.100/2015/uploadquality/';          //路徑
+//$url = 'http://127.0.0.1/2015/uploadquality/';          //路徑
 $tmp= $_FILES['file']['tmp_name'];
-$filename=basename(iconv("utf-8", "big5",$_FILES['file']['name']));  //編碼
+$filename=basename($_FILES['file']['name']);  //編碼
 
 
 /*
@@ -43,8 +44,9 @@ switch (exif_imagetype($tmp)) {
         exit();
         break;
 }
-@imagejpeg($img, $filename, $quality);        //上傳檔案到php所在位置
-@imagejpeg($img, $path.$filename, $quality);  //上傳檔案到目的資料夾 
+//@imagejpeg($img, $filename, $quality);        //上傳檔案到php所在位置
+@imagejpeg($img, "../../../uploadquality/".$filename, $quality);        //上傳檔案到php所在位置
+//@imagejpeg($img, $path.$filename, $quality);  //上傳檔案到目的資料夾 
 
 //move_uploaded_file($tmp,$path.$filename);//複製檔案//無法移動中文檔案
 //move_uploaded_file($tmp, iconv("utf-8", "big5", $path.$filename));//複製原始上傳檔案

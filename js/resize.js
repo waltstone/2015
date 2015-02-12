@@ -1,7 +1,7 @@
 (function (){
 	
 	
-	var elms = document.forms["form1"];//取得取得文件中第一個表單元素 (element)           // 取得表單名稱為form1的表單集合 var oform = document.forms["form1"];
+	var elms = document.forms["form4"];//取得取得文件中第一個表單元素 (element)           // 取得表單名稱為form1的表單集合 var oform = document.forms["form1"];
 
 	
 	
