@@ -49,7 +49,7 @@ if (isset($_GET['upload'])) {
 	}
 	
 
-	if($checkSize == "ok" && $checkSubName == "ok"){
+	if($checkSize == "ok" && $checkSubName == "ok"){//檢查通過 上傳
 		$upFloder = $_POST['upFloder'];
 		if($upFloder != ""){
 			$upload_dir = $upFloder.'/';
@@ -72,7 +72,7 @@ if (isset($_GET['upload'])) {
 		}
 		
 		$temploadfile = $_FILES['Filedata']['tmp_name'];
-		$result = move_uploaded_file($temploadfile , $upload_file);
+		$result = move_uploaded_file($temploadfile , $upload_file);//移動檔案
 	
 	}else{
 		

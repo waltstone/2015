@@ -1,7 +1,7 @@
 <html>
 <head>
     
-	<meta http-equiv="Content-Type" content="text/html; charset=big5">
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 
     <title>Login</title>
 </head>
@@ -18,8 +18,8 @@ if($_FILES['file']['error']>0){
 }
 
 $path ='C:\\wamp\\www\\2015\\upload\\';
-$url = 'http://192.168.0.100/2015/uploadquality/';          //路徑
-//$url = 'http://127.0.0.1/2015/uploadquality/';          //路徑
+//$url = 'http://192.168.0.100/2015/uploadquality/';          //路徑
+$url = 'http://127.0.0.1/2015/uploadquality/';          //路徑
 $tmp= $_FILES['file']['tmp_name'];
 $filename=basename($_FILES['file']['name']);  //編碼
 

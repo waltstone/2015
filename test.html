@@ -1,0 +1,132 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>HTML5拖曳多檔案上傳</title>
+    <style>
+    #dropDIV{
+        text-align: center;
+        width: 300px;
+        height: 200px;       
+        margin: auto;
+        border: dashed 2px gray;
+         
+    }
+    img{
+        max-height:200px;
+        max-width:300px;
+    }
+    </style>
+    <script>
+ 
+        function dragoverHandler(evt) {
+            evt.preventDefault();
+        }
+        function dropHandler(evt) {//evt 為 DragEvent 物件
+            evt.preventDefault();
+            var files = evt.dataTransfer.files;//由DataTransfer物件的files屬性取得檔案物件
+            var fd = new FormData();
+            var xhr = new XMLHttpRequest();
+            var up_progress = document.getElementById('up_progress');
+            xhr.open('POST', 'canvas-resize.php');//上傳到upload.php
+            xhr.onload = function() {
+                //上傳完成
+                up_progress.innerHTML = '100 %, 上傳完成';
+            };
+            xhr.upload.onprogress = function (evt) {
+              //上傳進度
+              if (evt.lengthComputable) {
+                var complete = (evt.loaded / evt.total * 100 | 0);
+                if(100==complete){
+                    complete=99.9;
+                }
+                up_progress.innerHTML = complete + ' %';
+              }
+            }
+            xhr.onreadystatechange = function() {
+                if (xhr.readyState == 4) {
+                    alert("伺服器回應：\n" + xhr.responseText);
+                    var obj = JSON.parse(xhr.responseText);
+                    for (var k in obj) {
+                        if(obj.hasOwnProperty(k)){
+                            var pic_url = './uploadJSresize/' + obj[k];
+                            
+                            var ax = document.createElement('a');
+                            ax.href = pic_url;
+                            ax.target = "_blank";
+                            
+                            var imgx = document.createElement('img');
+                            imgx.style.margin = "10px";
+                            imgx.src = pic_url;
+                            
+                            ax.appendChild(imgx);
+                            document.getElementById('imgDIV2').appendChild(ax);
+                        }
+                    }
+                }
+            }
+ 
+         
+            for (var i in files) {
+                if (files[i].type == 'image/jpeg') {
+                    //將圖片在頁面預覽
+                    var fr = new FileReader();
+                    fr.onload = openfile;
+                    fr.readAsDataURL(files[i]);
+                     
+                    //新增上傳檔案，上傳後名稱為 ff 的陣列
+                    fd.append('ff[]', files[i]);
+                }
+            }
+            xhr.send(fd);//開始上傳
+        }
+        function openfile(evt) {
+            var img = evt.target.result;
+            var imgx = document.createElement('img');
+            imgx.style.margin = "10px";
+            imgx.src = img;
+            document.getElementById('imgDIV').appendChild(imgx);
+        }   
+    </script>
+</head>
+<body>
+    <div id="dropDIV" ondragover="dragoverHandler(event)" ondrop="dropHandler(event)">
+    拖曳圖片到此處上傳
+    <div id="up_progress"></div>
+    </div>
+    上傳前圖片預覽
+    <div id="imgDIV" style="margin-bottom:30px;"></div>
+    <hr>
+    上傳後圖片
+    <div id="imgDIV2" style="margin-bottom:30px;"></div>
+    
+    <hr>
+    伺服器端 PHP 程式碼
+    <pre>
+&lt;?php
+set_time_limit(0);
+$pic_name = array();//上傳後,所有圖片檔名
+$uploads_dir = 'mydir';//存放上傳檔案資料夾
+foreach ($_FILES["ff"]["error"] as $key => $error) {
+    if ($error == UPLOAD_ERR_OK) {
+        $tmp_name = $_FILES["ff"]["tmp_name"][$key];
+        $name = $_FILES["ff"]["name"][$key];
+        $ext = pathinfo($name, PATHINFO_EXTENSION);
+        $ext = strtolower($ext);
+        if($ext !== 'jpg' && $ext !== 'jpeg'){
+            continue;
+        }
+        $name = time() . rand(10, 99) . "." . $ext; // 新檔名
+        $res = move_uploaded_file($tmp_name, "$uploads_dir/$name");
+        if($res){
+            $pic_name [] = $name;
+        }
+        
+    }
+}
+
+echo  json_encode($pic_name); // 檔名以 JSON 輸出
+    </pre>
+</body>
+</html>

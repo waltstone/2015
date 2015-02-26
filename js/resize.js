@@ -1,7 +1,7 @@
 (function (){
 	
 	
-	var elms = document.forms["form4"];//取得取得文件中第一個表單元素 (element)           // 取得表單名稱為form1的表單集合 var oform = document.forms["form1"];
+	var elms = document.forms["form4"];//取得取得文件中第一個表單元素 (element) // 取得表單名稱為form1的表單集合 var oform = document.forms["form1"];
 
 	
 	
@@ -13,14 +13,14 @@
 		// Create preview
 		FileAPI.Image(file)
 			
-			.resize(1000, 1000, 'max')           //resize
+			.resize(600, 600, 'max')           //resize
 			//.overlay(overlay)
 			//.preview(600, 600)
 			//.rotate(45)    //旋轉照片
 			.get(function (err, img){
 			image.innerHTML = '';
 			image.appendChild(img);	//附加		
-			document.getElementById('preview-processing').style.display = 'none';
+			document.getElementById('preview-processing').style.display = 'none';   //處理中字樣
 			});
 
 		document.getElementById('uploading').style.display = '';
@@ -30,30 +30,33 @@
 			  url: 'js/FileAPI-master/server/ctrl.php'
 			, files: elms.file
 			, imageTransform: {
-				  width: elms.width.value|0
-				, height: elms.height.value|0
+				  // width: elms.width.value|0
+				// , height: elms.height.value|0
+				width: 1000|0                                              //設定大小
+				, height: elms.height.value/(elms.width.value/1000)|0
 				, preview: true
 				, type: type // Output type
+				, quality: 0.1 // jpeg quality
 				//, overlay: overlay // Add watermark
 			}
-			, upload: function (){
+			, upload: function (){//
 				document.getElementById('uploading').innerHTML = '(uploading&hellip;)';
 			}
-			, progress: function (evt){
+			, progress: function (evt){//進度顯示
 				document.getElementById('uploading').innerHTML = (evt.loaded/evt.total * 100).toFixed(2) +'%';//進度顯示
 			}
 			, complete: function (err, xhr){
 				if( err ){
 					alert('Oops, server error.');//server連接失敗
-				} else {
+				} else {                         // All files successfully uploaded.
 					var res = JSON.parse(xhr.responseText);
 
-					FileAPI.each(res.images, function (file){
-						var matrix	= FileAPI.Image.prototype.getMatrix.call({ matrix: { dw: 300, dh: 300, resize: 'max' } }, file);
+					FileAPI.each(res.images, function (file){//上傳server成功縮圖
+						var matrix	= FileAPI.Image.prototype.getMatrix.call({ matrix: { dw: 300, dh: 300, resize: 'max' } }, file);//縮圖大小
 
 						FileAPI.Image.fromDataURL(file.dataURL, { width: matrix.dw, height: matrix.dh }, function (img){
-							server.innerHTML = '';//server回傳字串
-							server.appendChild(img);
+							server.innerHTML = '縮圖';//server回傳字串
+							server.appendChild(img);  //顯示圖片
 							server.innerHTML += '<div><b>'+file.width+'x'+file.height+', '+file.mime+', '+(file.size/1024).toFixed(3)+'KB</b></div>';
 							//圖片資訊
 						});
@@ -61,6 +64,9 @@
 						//document.getElementById('uploading').style.display = 'none';   //百分比消失
 					});
 				}
+			}
+			, fileupload: function (file, xhr, options){
+				
 			}
 		});
 	

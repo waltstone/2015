@@ -27,9 +27,8 @@ if( strtoupper($_SERVER['REQUEST_METHOD']) == 'POST' ){
 
 
 	// Fetch all image-info from files list
-	fetchImages($files, $images);
-
-
+	fetchImages($files, $images);		
+	
 	// JSONP callback name
 	$jsonp	= isset($_REQUEST['callback']) ? trim($_REQUEST['callback']) : null;
 
@@ -39,7 +38,6 @@ if( strtoupper($_SERVER['REQUEST_METHOD']) == 'POST' ){
 		  'images'	=> $images
 		, 'data'	=> array('_REQUEST' => $_REQUEST, '_FILES' => $files)
 	);
-
 
 	// Server response: "HTTP/1.1 200 OK"
 	FileAPI::makeResponse(array(
@@ -52,7 +50,8 @@ if( strtoupper($_SERVER['REQUEST_METHOD']) == 'POST' ){
 
 
 function fetchImages($files, &$images, $name = 'file'){
-	if( isset($files['tmp_name']) ){
+	if( isset($files['tmp_name']) ){		
+		
 		$filename = $files['tmp_name'];
 		list($mime)	= explode(';', @mime_content_type($filename));
 
@@ -68,6 +67,26 @@ function fetchImages($files, &$images, $name = 'file'){
 				, 'dataURL'	=> 'data:'. $mime .';base64,'. $base64
 			);
 		}
+		
+		$filename2=iconv("utf-8", "big5",$files['name']);  //編碼
+		$tmp= $files['tmp_name'];
+		switch (exif_imagetype($tmp)) {
+ 
+			case IMAGETYPE_PNG :
+				$img = imagecreatefrompng($tmp);
+				break;
+			case IMAGETYPE_JPEG :
+				$img = imagecreatefromjpeg($tmp);
+				break;
+			default:
+				throw new InvalidArgumentException("錯誤發生");
+				exit();
+				break;
+		}
+
+		$quality = 100;		//改變品質
+		@imagejpeg($img, "../../../uploadJSresize/".$filename2, $quality);        //上傳檔案到php所在位置
+		
 	}
 	else {
 		foreach( $files as $name => $file ){
@@ -77,16 +96,6 @@ function fetchImages($files, &$images, $name = 'file'){
 }
 ?>
 
-<html lang="en">
-<head>
-    
-	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 
-    <title>Login</title>
-	
-	
-</head>
-<body>
-test
-</body>
-</html>
+
+
